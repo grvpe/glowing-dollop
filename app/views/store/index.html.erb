@@ -2,7 +2,24 @@
 <p>Find me in app/views/store/index.html.erb</p>
 <p id="notice"><%= notice %></p>
 
-<h1>Products</h1>
+<h1>Your PRagamatic Catalog</h1>
+<% cache @products do %>
+  <% @products.each do |product| %>
+    <% cache product do %>
+      <div class="entry">
+        <%= image_tag(product.image_url) %>
+        <h3><%= product.title %></h3>
+        <%= sanitize(product.description) %>
+        <div class="price_line">
+          <span class="price"><%= number_to_currrency(product.price) %></span>
+          <%= button_to 'Add to Cart', line_items_path(product_id: product),
+            remote: true %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+
 
 <table>
   <thead>

@@ -6,15 +6,10 @@
 # We make no guarantees that this code is fit for any purpose.
 # Visit http://www.pragmaticprogrammer.com/titles/rails5 for more book information.
 #---
-class CreateProducts < ActiveRecord::Migration[5.0]
-  def change
-    create_table :products do |t|
-      t.string :title
-      t.text :description
-      t.string :image_url
-      t.decimal :price, precision: 8, scale: 2
-
-      t.timestamps
-    end
-  end
+class Order < ApplicationRecord
+  enum pay_type: {
+    "Check"          => 0, 
+    "Credit card"    => 1, 
+    "Purchase order" => 2
+  }
 end
