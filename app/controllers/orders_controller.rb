@@ -7,9 +7,10 @@
 # Visit http://www.pragmaticprogrammer.com/titles/rails5 for more book information.
 #---
 class OrdersController < ApplicationController
+  skip_before_action :authorize, only: [:new, :create]
   include CurrentCart
   before_action :set_cart, only: [:new, :create]
-  before_action :ensure_cart_isnt_empty, only: :new
+  before_action :ensure_cart_isnt_empty, only: [:new]
   before_action :set_order, only: [:show, :edit, :update, :destroy]
 
   # GET /orders
@@ -34,10 +35,10 @@ class OrdersController < ApplicationController
 
   # POST /orders
   # POST /orders.json
+  
   def create
     @order = Order.new(order_params)
     @order.add_line_items_from_cart(@cart)
-
     respond_to do |format|
       if @order.save
         Cart.destroy(session[:cart_id])
@@ -46,7 +47,7 @@ class OrdersController < ApplicationController
           'Thank you for your order.' }
         format.json { render :show, status: :created,
           location: @order }
-      else
+        else
         format.html { render :new }
         format.json { render json: @order.errors,
           status: :unprocessable_entity }
@@ -88,7 +89,6 @@ class OrdersController < ApplicationController
     def order_params
       params.require(:order).permit(:name, :address, :email, :pay_type)
     end
-  #...
 
   private
      def ensure_cart_isnt_empty
